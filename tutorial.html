@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>论坛体生成器 - 使用教程</title>
+<style>
+:root {
+  --bg: #f8f6f2;
+  --panel: #fff;
+  --border: #e0d8cc;
+  --text: #333;
+  --text-2: #666;
+  --text-3: #999;
+  --accent: #c0392b;
+  --accent-light: #fdf2f0;
+  --code-bg: #f5f3ef;
+  --tag-op: #e74c3c;
+  --tag-mod: #3498db;
+  --tag-floor: #27ae60;
+  --sidebar-w: 240px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.75;
+  font-size: 15px;
+}
+/* Layout */
+.page { display: flex; min-height: 100vh; }
+.sidebar {
+  width: var(--sidebar-w);
+  background: #2c2c2c;
+  color: #ccc;
+  padding: 32px 0;
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  overflow-y: auto;
+  z-index: 10;
+}
+.sidebar-title {
+  font-size: 16px; font-weight: 700; color: #fff;
+  padding: 0 24px 20px;
+  border-bottom: 1px solid #444;
+  margin-bottom: 12px;
+}
+.sidebar a {
+  display: block;
+  padding: 8px 24px;
+  color: #aaa;
+  text-decoration: none;
+  font-size: 13px;
+  transition: all 0.15s;
+  border-left: 3px solid transparent;
+}
+.sidebar a:hover { color: #fff; background: rgba(255,255,255,0.06); }
+.sidebar a.active { color: #fff; border-left-color: var(--accent); background: rgba(192,57,43,0.15); }
+.sidebar a.sub { padding-left: 40px; font-size: 12px; }
+.content {
+  flex: 1;
+  margin-left: var(--sidebar-w);
+  padding: 48px 64px 80px;
+  max-width: 900px;
+}
+/* Typography */
+h1 { font-size: 32px; font-weight: 700; margin-bottom: 8px; color: #1a1a1a; }
+h2 {
+  font-size: 24px; font-weight: 700;
+  margin-top: 56px; margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--border);
+  color: #1a1a1a;
+}
+h2:first-of-type { margin-top: 24px; }
+h3 {
+  font-size: 18px; font-weight: 600;
+  margin-top: 32px; margin-bottom: 12px;
+  color: #222;
+}
+h4 { font-size: 15px; font-weight: 600; margin-top: 20px; margin-bottom: 8px; color: #444; }
+p { margin-bottom: 12px; color: var(--text-2); }
+.lead { font-size: 16px; color: var(--text-2); margin-bottom: 32px; }
+ul, ol { margin: 8px 0 16px 20px; color: var(--text-2); }
+li { margin-bottom: 6px; }
+strong { color: var(--text); font-weight: 600; }
+code {
+  font-family: "SF Mono", Consolas, "Courier New", monospace;
+  background: var(--code-bg);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 13px;
+  color: var(--accent);
+}
+pre {
+  background: #2c2c2c;
+  color: #e8e8e8;
+  padding: 16px 20px;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 12px 0;
+  font-size: 13px;
+  line-height: 1.6;
+}
+pre code { background: none; color: inherit; padding: 0; font-size: 13px; }
+
+/* Components */
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: 600;
+  margin: 0 2px;
+}
+.tag-op { background: #fdecea; color: var(--tag-op); }
+.tag-mod { background: #e8f4fd; color: var(--tag-mod); }
+.tag-floor { background: #e8f8f0; color: var(--tag-floor); }
+.tag-new { background: #fef9e7; color: #f39c12; }
+
+.callout {
+  background: var(--accent-light);
+  border-left: 4px solid var(--accent);
+  padding: 14px 18px;
+  border-radius: 0 6px 6px 0;
+  margin: 16px 0;
+  font-size: 14px;
+  color: #555;
+}
+.callout-blue { background: #e8f4fd; border-left-color: var(--tag-mod); }
+.callout-green { background: #e8f8f0; border-left-color: var(--tag-floor); }
+.callout strong { color: var(--accent); }
+.callout-blue strong { color: var(--tag-mod); }
+.callout-green strong { color: var(--tag-floor); }
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0;
+  font-size: 14px;
+}
+.table th, .table td {
+  border: 1px solid var(--border);
+  padding: 8px 12px;
+  text-align: left;
+}
+.table th { background: var(--code-bg); font-weight: 600; color: #333; }
+.table td code { font-size: 12px; }
+
+.kbd {
+  display: inline-block;
+  padding: 2px 8px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-bottom: 2px solid #bbb;
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: monospace;
+  color: #333;
+  box-shadow: 0 1px 0 #ddd;
+}
+
+.step { display: flex; gap: 12px; margin: 10px 0; }
+.step-num {
+  flex-shrink: 0;
+  width: 28px; height: 28px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+}
+.step-body { flex: 1; }
+.step-body p { margin-bottom: 4px; }
+
+.flow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
+.flow-item {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.flow-arrow { color: var(--text-3); font-size: 18px; }
+
+/* Mobile */
+@media (max-width: 768px) {
+  .sidebar { position: static; width: 100%; padding: 16px; }
+  .content { margin-left: 0; padding: 24px 20px 60px; }
+  .page { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <!-- Sidebar Navigation -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-title">论坛体生成器<br>使用教程</div>
+    <a href="#start" class="active">快速上手</a>
+    <a href="#input">输入内容与实时预览</a>
+    <a href="#input-1" class="sub">帖子信息</a>
+    <a href="#input-2" class="sub">楼层内容编辑</a>
+    <a href="#input-3" class="sub">实时预览</a>
+    <a href="#template">编辑模板</a>
+    <a href="#template-1" class="sub">头部模板</a>
+    <a href="#template-2" class="sub">尾部模板</a>
+    <a href="#template-3" class="sub">楼层分隔方式</a>
+    <a href="#floornav">楼层导航</a>
+    <a href="#floornav-1" class="sub">跳转、选择与批量编辑</a>
+    <a href="#floornav-2" class="sub">筛选器</a>
+    <a href="#importexport">导入与导出</a>
+    <a href="#importexport-1" class="sub">导入</a>
+    <a href="#importexport-2" class="sub">导出文本</a>
+    <a href="#importexport-3" class="sub">导出图片</a>
+    <a href="#importexport-4" class="sub">导出工程</a>
+    <a href="#immersive">沉浸模式</a>
+    <a href="#profiles">用户信息管理</a>
+    <a href="#shortcuts">键盘快捷键</a>
+    <a href="#faq">常见问题 (FAQ)</a>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="content">
+
+    <h1>论坛体生成器 - 使用教程</h1>
+    <p class="lead">像发帖一样排版文本 —— 一款可视化论坛帖子排版工具，支持楼层管理、模板自定义、文本与图片导出。</p>
+
+    <!-- ==================== 快速上手 ==================== -->
+    <h2 id="start">快速上手</h2>
+
+    <p>核心用途：将一段段文字排版成论坛帖子的格式（带楼层号、用户名、IP 属地等），最终导出为文本或图片。</p>
+
+    <div class="flow">
+      <div class="flow-item">填写标题</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-item">编辑楼层内容</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-item">填写用户信息</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-item">实时预览</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-item">导出文本 / 图片</div>
+    </div>
+
+    <h3>30 秒上手</h3>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body"><p>在 <strong>Block 1 帖子信息</strong> 中输入帖子标题（如「今天天气真好」）</p></div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body"><p>在 <strong>Block 3 楼层内容</strong> 的文本框中输入第一楼的内容</p></div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body"><p>点击「+ 添加新楼层」或按 <span class="kbd">Ctrl</span>+<span class="kbd">Enter</span> / 双击回车新建或进入下一楼</p></div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body"><p>在右侧预览面板查看效果（视觉 / 文本两种模式，可选配色风格）</p></div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-body"><p>点击工具栏「导出」下拉，选择导出文本 / 图片 / 工程文件</p></div>
+    </div>
+
+    <div class="callout">
+      <strong>提示：</strong>新楼层默认没有用户名和身份信息，且各字段的「显示」开关默认关闭。填写信息后需开启对应开关，信息才会出现在输出中。
+    </div>
+
+    <h3>界面布局</h3>
+    <table class="table">
+      <tr><th>区域</th><th>位置</th><th>功能</th></tr>
+      <tr><td>工具栏</td><td>顶部</td><td>导入、导出、用户信息、清除（重置内容/重置格式/重置用户信息/一起重置）、复制文本、沉浸写作、使用教程</td></tr>
+      <tr><td>楼层导航</td><td>左侧</td><td>楼层缩略列表：点击跳转、勾选/全选/反选、批量编辑；右上角漏斗图标打开筛选器；可收起</td></tr>
+      <tr><td>编辑器</td><td>中间</td><td>Block 1 帖子信息 + Block 2 楼层模板 + Block 3 楼层内容</td></tr>
+      <tr><td>预览面板</td><td>右侧</td><td>实时预览，视觉/文本模式切换，可选 13 套视觉配色</td></tr>
+    </table>
+
+    <!-- ==================== 输入内容与实时预览 ==================== -->
+    <h2 id="input">输入内容与实时预览</h2>
+    <p>编辑器负责输入，右侧预览面板实时反映每一次修改。</p>
+
+    <h3 id="input-1">帖子信息（Block 1）</h3>
+    <p>标题始终显示；点击「展开更多」可编辑板块、发帖时间、浏览量、回复量，以及「文本块头部模板」。</p>
+    <table class="table">
+      <tr><th>变量</th><th>含义</th><th>示例</th></tr>
+      <tr><td><code>{title}</code></td><td>帖子标题</td><td>今天天气真好</td></tr>
+      <tr><td><code>{board}</code></td><td>板块</td><td>日常闲聊</td></tr>
+      <tr><td><code>{time}</code></td><td>发帖时间</td><td>2026-08-10 12:00</td></tr>
+      <tr><td><code>{views}</code></td><td>浏览量</td><td>1024</td></tr>
+      <tr><td><code>{replies}</code></td><td>回复量</td><td>56</td></tr>
+    </table>
+    <p>文本块头部模板默认：<code>{title} {board}  {time}</code>，下方带实时小预览。</p>
+
+    <h3 id="input-2">楼层内容编辑（Block 3）</h3>
+    <h4>添加与删除楼层</h4>
+    <ul>
+      <li><strong>添加</strong>：底部「+ 添加新楼层」按钮，或 <span class="kbd">Ctrl</span>+<span class="kbd">Enter</span> / 双击回车（行为可在预览栏切换）</li>
+      <li><strong>删除 / 复制 / 移动</strong>：楼层卡片右上角操作按钮</li>
+    </ul>
+    <h4>楼层信息</h4>
+    <ul>
+      <li><strong>展开信息面板</strong>：填写用户名、身份、IP 属地、时间；每个字段旁有独立的「显示」开关。</li>
+      <li><strong>眼睛图标</strong> &#128065;/&#128064;：展开/收起该楼的用户设置面板；Block 3 标题栏「显示楼层信息」复选框可一键开合所有楼层面板（仅控制面板开合，不改变文本显示）。</li>
+      <li><strong>快速导入用户</strong>：面板顶部下拉选择已保存用户，一键填入。</li>
+      <li><strong>保存当前用户</strong>：把当前楼层用户信息存为用户档案。</li>
+      <li><strong>清除用户信息</strong>：一键清空当前楼层用户信息并关闭显示开关。</li>
+    </ul>
+    <div class="callout">
+      <strong>显示规则：</strong>楼层号始终显示；用户名、身份、IP、时间是否出现由各楼层的「显示」开关决定，与面板是否展开无关。
+    </div>
+
+    <h3 id="input-3">实时预览</h3>
+    <ul>
+      <li><strong>视觉模式</strong>：模拟论坛帖子视觉效果（楼层号、用户名徽章、IP 属地等）；右上角「风格」下拉可在 13 套配色间切换（浅色/深色/暖色/论坛蓝/护眼/暗夜紫/薄荷绿/莫兰迪/赛博/复古/商务灰/粉色/淡紫色）。</li>
+      <li><strong>文本模式</strong>：显示纯文本输出，与导出的文本内容一致。</li>
+      <li>预览栏右上角提示文字（如「双击回车→下一楼 | Ctrl+回车→新建」）可点击切换键位模式。</li>
+    </ul>
+
+    <!-- ==================== 编辑模板 ==================== -->
+    <h2 id="template">编辑模板</h2>
+    <p>Block 2 · 楼层模板：控制每一楼的头部、尾部信息行与楼层之间的分隔方式。整个 Block 2 可通过标题栏「收起/展开」折叠。</p>
+
+    <h3 id="template-1">头部模板</h3>
+    <table class="table">
+      <tr><th>变量</th><th>含义</th><th>示例值</th></tr>
+      <tr><td><code>{floor}</code></td><td>楼层号（自动编号）</td><td>1, 2, 3…</td></tr>
+      <tr><td><code>{username}</code></td><td>用户名</td><td>吃瓜群众</td></tr>
+      <tr><td><code>{identity}</code></td><td>身份标识</td><td>[楼主] [版主]</td></tr>
+      <tr><td><code>{ip}</code></td><td>IP 属地</td><td>北京</td></tr>
+      <tr><td><code>{time}</code></td><td>楼层时间</td><td>2026-08-10 12:00</td></tr>
+    </table>
+    <p>默认模板：<code>{floor}L {username} {identity} IP:{ip}</code>，渲染效果：<code>1L 吃瓜群众 [楼主] IP:北京</code>。</p>
+    <div class="callout callout-blue">
+      <strong>注意：</strong>变量是否显示受楼层级「显示」开关控制。模板里写了 <code>{username}</code>，但该楼「显示用户名」开关未开，就不会出现在输出中。
+    </div>
+
+    <h3 id="template-2">尾部模板</h3>
+    <p>使用与头部相同的变量，留空则不显示。例：<code>---{floor}L---</code> 会在每楼底部显示 <code>---1L---</code>。</p>
+
+    <h3 id="template-3">楼层分隔方式</h3>
+    <table class="table">
+      <tr><th>选项</th><th>效果</th></tr>
+      <tr><td>两行空行</td><td>楼层之间空两行（默认）</td></tr>
+      <tr><td>一行空行</td><td>楼层之间空一行</td></tr>
+      <tr><td>分隔线</td><td>楼层之间显示一条分隔线</td></tr>
+      <tr><td>无分隔</td><td>无额外分隔</td></tr>
+      <tr><td>自定义</td><td>输入自定义分隔文本，<code>\n</code> 表示换行</td></tr>
+    </table>
+    <p>每项选择旁都有对应的小预览。</p>
+
+    <!-- ==================== 楼层导航 ==================== -->
+    <h2 id="floornav">楼层导航</h2>
+    <p>左侧导航栏用于快速定位与批量操作楼层，右上角漏斗图标提供条件筛选。导航区可收起（<span class="kbd">&#9776;</span>）以获得更大编辑空间。</p>
+
+    <h3 id="floornav-1">跳转、选择与批量编辑</h3>
+    <ul>
+      <li><strong>跳转</strong>：点击楼层卡片直接跳转到对应楼层。</li>
+      <li><strong>选择</strong>：勾选卡片上的复选框；顶部「全选 / 反选」作用于当前导航列表。</li>
+    </ul>
+    <p>选中 2 个及以上楼层后，底部弹出批量工具栏：</p>
+    <table class="table">
+      <tr><th>功能</th><th>说明</th></tr>
+      <tr><td>导入用户</td><td>从下拉选择用户档案，批量应用到所有选中楼层</td></tr>
+      <tr><td>设置用户名 / 设置身份</td><td>批量设置选中楼层的用户名 / 身份</td></tr>
+      <tr><td>显示开关</td><td>批量切换「显示用户名」「显示身份」等开关</td></tr>
+      <tr><td>删除选中</td><td>批量删除所有选中楼层</td></tr>
+    </table>
+
+    <h3 id="floornav-2">筛选器</h3>
+    <p>点击导航区右上角<b>漏斗图标</b>，在图标旁浮出筛选面板（不挤占导航排版）：</p>
+    <ul>
+      <li><strong>筛选变量</strong>：楼层范围、用户名称、用户身份、IP 地址、内容。</li>
+      <li><strong>运算符</strong>：文本变量为 包含 / 严格等于（默认包含）；楼层范围为 属于 / 不属于。</li>
+      <li><strong>取值</strong>：可从下拉选择该变量已有的全部值（用户名、身份、IP 等），也可自行输入。</li>
+      <li><strong>多条件组合</strong>：可「+ 添加条件」多个条件，条件间用 与(AND) / 或(OR) / 非(NOT) 组合（从左到右求值）。</li>
+      <li><strong>应用 / 取消筛选</strong>：编辑条件不影响导航，点「应用」才提交并关闭面板；「取消筛选」清除已应用条件。</li>
+    </ul>
+    <div class="callout callout-blue">
+      <strong>「空」的语义：</strong>选择「空」＝该字段无此信息：运算符「包含」→ 显示全部楼层；「严格等于」→ 仅显示该字段为空的楼层。
+    </div>
+    <p>筛选生效后，导航列表只显示命中的楼层；勾选、全选/反选、批量编辑、跳转均只作用于可见列表。</p>
+
+    <!-- ==================== 导入与导出 ==================== -->
+    <h2 id="importexport">导入与导出</h2>
+    <p>工具栏「导入」「导出」两个下拉菜单覆盖全部内容进出方式。</p>
+
+    <h3 id="importexport-1">导入</h3>
+    <h4>导入文本</h4>
+    <ul>
+      <li><strong>分割模式</strong>：按空行分割（每个段落成为一楼，默认）/ 按每行分割。</li>
+      <li><strong>智能识别</strong>：自动解析标题、楼层头部（如 <code>1L 用户名 [楼主] IP:北京</code>）、楼层尾部。</li>
+      <li><strong>替换 vs 追加</strong>：勾选「替换现有楼层」（默认）则清空当前内容，否则在末尾追加。</li>
+    </ul>
+    <h4>导入工程</h4>
+    <p>导入 <code>.json</code> 工程文件，三种模式：</p>
+    <table class="table">
+      <tr><th>模式</th><th>说明</th></tr>
+      <tr><td>仅信息</td><td>只导入内容（标题/楼层/用户档案），不覆盖模板与格式</td></tr>
+      <tr><td>仅格式</td><td>只导入模板/分隔符/导出设置，不覆盖内容</td></tr>
+      <tr><td>全部导入<span class="tag tag-new">推荐</span></td><td>完整导入格式与信息</td></tr>
+    </table>
+    <div class="callout callout-blue"><strong>多帖子工程：</strong>工程文件含多个帖子时会弹出帖子选择器，选择要加载的帖子。</div>
+
+    <h3 id="importexport-2">导出文本</h3>
+    <ul>
+      <li><strong>导出为 TXT 文件</strong>：保存为 <code>.txt</code> 纯文本。</li>
+      <li><strong>复制到剪贴板</strong>：复制纯文本。</li>
+      <li><strong>复制富文本</strong>：复制带格式的文本（均在「导出」下拉的文本分组中；工具栏另有独立「复制文本」按钮）。</li>
+    </ul>
+
+    <h3 id="importexport-3">导出图片</h3>
+    <h4>导出文本图片…</h4>
+    <p>完整的设置弹窗（左侧参数，右侧实时预览）：</p>
+    <ul>
+      <li><strong>模式</strong>：
+        <ul>
+          <li><strong>长图</strong>：单张连续图片，宽度可选（280 ~ 1080 预设或自定义），高度自适应，2x 缩放。</li>
+          <li><strong>分页图</strong>：小红书格式 3:4 (1080×1440) / 4:5 (1080×1350) / 1:1 (1080×1080)，智能分页。</li>
+        </ul>
+      </li>
+      <li><strong>风格</strong>：默认纯文本 / 秀米卡片式（背景色、卡片色、圆角、底部标签）。</li>
+      <li><strong>字体</strong>：字号、字体（等线/系统/黑体/宋体/无衬线/等宽）、行高、页边距、文字色、背景色。</li>
+      <li><strong>图片格式</strong>：PNG（无损，默认）/ JPEG（更小，可调质量 50-100）。</li>
+      <li><strong>导出范围</strong>：全部 / 自定义起止楼层 / 仅选中楼层。</li>
+    </ul>
+    <div class="callout callout-green">
+      <strong>分页原理：</strong>测量每个楼层块高度 → 按页面可用高度智能分页 → 每页独立排版 → 精确填充到目标尺寸，楼层不会被截断。
+    </div>
+    <h4>导出视觉图片</h4>
+    <p>选择配色主题（13 套）与预设尺寸后导出，导出的图片与右侧实时预览的视觉风格一致。</p>
+
+    <h3 id="importexport-4">导出工程</h3>
+    <p>保存 <code>.json</code> 文件，包含全部内容、模板、用户档案与导出设置，可用于备份与迁移。文件名格式：<code>forum-project-{标题}-{时间戳}.json</code>。</p>
+
+    <!-- ==================== 沉浸模式 ==================== -->
+    <h2 id="immersive">沉浸模式</h2>
+
+    <p>点击工具栏「&#9998; 沉浸写作」进入：隐藏导航、预览、模板等所有非必要元素，仅保留标题与楼层正文，专注写作。</p>
+
+    <h3>沉浸下可编辑的内容</h3>
+    <ul>
+      <li>帖子<b>标题</b>（居中大字，仅此一项来自帖子信息）。</li>
+      <li>每楼的<b>用户名称</b>（正文上方内联输入框）。</li>
+      <li>每楼的<b>文本内容</b>。</li>
+    </ul>
+    <p>不额外设置用户信息栏——用户名直接在每楼内联输入，回车即跳到正文。</p>
+
+    <h3>楼层推进与焦点流</h3>
+    <ul>
+      <li>双击回车 或 <span class="kbd">Ctrl</span>+<span class="kbd">Enter</span> 进入下一楼 / 新建楼层时，<b>先聚焦该楼的用户名输入框</b>。</li>
+      <li>直接输入用户名后按 <span class="kbd">Enter</span> → 确认并跳到正文文本框。</li>
+      <li>也可以<b>下拉选择已有用户名</b>：点击输入框，或用方向键 <span class="kbd">↓</span>/<span class="kbd">↑</span> 浏览候选（候选 = 全楼已有用户名 + 已保存的用户档案）；回车确认后跳到正文。刚按过方向键时，回车先让浏览器填入所选值（不跳转），再按一次回车进入正文。</li>
+    </ul>
+
+    <h3>退出沉浸</h3>
+    <ul>
+      <li>点击工具栏「&#8592; 退出沉浸」按钮</li>
+      <li>按 <span class="kbd">Esc</span> 键</li>
+    </ul>
+
+    <!-- ==================== 用户信息管理 ==================== -->
+    <h2 id="profiles">用户信息管理</h2>
+
+    <p>点击工具栏「用户信息」打开管理弹窗，集中管理可复用的用户档案。</p>
+
+    <h3>档案操作</h3>
+    <ul>
+      <li><strong>新建</strong>：填写用户名、IP 属地、身份后保存。</li>
+      <li><strong>编辑 / 删除</strong>：修改或移除已有档案。</li>
+      <li><strong>应用</strong>：把档案应用到当前选中的楼层；楼层信息面板内也可用「快速导入用户」下拉直接选用。</li>
+      <li><strong>批量管理</strong>：勾选多个档案后可批量删除。</li>
+    </ul>
+
+    <h3>在楼层中使用</h3>
+    <ul>
+      <li><strong>快速导入用户</strong>：楼层信息面板顶部下拉选择已保存用户，一键填入用户名/IP/身份。</li>
+      <li><strong>保存当前用户</strong>：把当前楼层的用户信息存为档案，供其他楼层复用。</li>
+      <li><strong>清除用户信息</strong>：一键清空当前楼层用户信息并关闭显示开关。</li>
+    </ul>
+
+    <div class="callout">
+      <strong>存储说明：</strong>用户档案只保存在<b>当前页面内存</b>中，新开页面 / 刷新后为空（刻意避免页面间相互影响）。需要保留时请「导出工程文件」备份，之后「导入工程」恢复。
+    </div>
+
+    <!-- ==================== 键盘快捷键 ==================== -->
+    <h2 id="shortcuts">键盘快捷键</h2>
+
+    <table class="table">
+      <tr><th>快捷键</th><th>功能</th><th>说明</th></tr>
+      <tr>
+        <td><span class="kbd">Enter</span> × 2（双击回车）</td>
+        <td>进入下一楼 / 新建楼层</td>
+        <td>默认进入下一楼（已是最后一楼时新建）；点击预览栏提示文字可切换为「双击回车新建」</td>
+      </tr>
+      <tr>
+        <td><span class="kbd">Ctrl</span> + <span class="kbd">Enter</span></td>
+        <td>新建楼层</td>
+        <td>在当前楼层下方新建</td>
+      </tr>
+      <tr>
+        <td><span class="kbd">Enter</span>（用户名输入框内）</td>
+        <td>确认用户名并跳到正文</td>
+        <td>沉浸模式；刚按过方向键时先填值不跳转</td>
+      </tr>
+      <tr>
+        <td><span class="kbd">↓</span> / <span class="kbd">↑</span>（用户名输入框内）</td>
+        <td>浏览下拉候选</td>
+        <td>沉浸模式，从已有用户名中选择</td>
+      </tr>
+      <tr>
+        <td><span class="kbd">Esc</span></td>
+        <td>退出沉浸模式</td>
+        <td>仅在沉浸模式下有效</td>
+      </tr>
+    </table>
+
+    <!-- ==================== FAQ ==================== -->
+    <h2 id="faq">常见问题 (FAQ)</h2>
+
+    <h3>Q：新建楼层后为什么看不到用户名 / IP？</h3>
+    <p><strong>A：</strong>新楼层默认无用户信息且各字段「显示」开关关闭。展开楼层信息面板填写用户名/IP/身份后，勾选对应的「显示」开关即可；或直接用「快速导入用户」一键带入已保存的档案。</p>
+
+    <h3>Q：模板里写了 {username}，导出却没有？</h3>
+    <p><strong>A：</strong>模板变量受楼层级「显示」开关控制：该楼「显示用户名」开关未开，则 <code>{username}</code> 不渲染。楼层号始终显示，不受开关影响。</p>
+
+    <h3>Q：实时预览和导出图片为什么不一样？</h3>
+    <p><strong>A：</strong>三者目标不同：右侧「实时预览」是编辑时的可视化效果（视觉模式）；「导出文本图片…」是纯文本排版（其弹窗内有独立预览，可调字体/风格/尺寸）；「导出视觉图片」导出的就是实时预览的视觉风格。按需选择即可。</p>
+
+    <h3>Q：按回车没有新建楼层？</h3>
+    <p><strong>A：</strong>「双击回车」默认是进入下一楼（已是最后一楼时才新建）。点击预览栏右上角的提示文字可切换为「双击回车新建」模式。<span class="kbd">Ctrl</span>+<span class="kbd">Enter</span> 始终新建楼层。</p>
+
+    <h3>Q：筛选器里的「空」怎么用？</h3>
+    <p><strong>A：</strong>「空」＝该字段无此信息。运算符「包含」+ 空 → 显示全部楼层；「严格等于」+ 空 → 仅显示该字段为空的楼层。点「取消筛选」可随时复位。</p>
+
+    <h3>Q：为什么新开的页面没有上次保存的用户？</h3>
+    <p><strong>A：</strong>用户档案只保存在当前页面内存中，新开页面 / 刷新后为空（刻意设计，避免页面间相互影响）。需要保留时请「导出工程文件」，下次「导入工程」恢复。</p>
+
+    <h3>Q：导出的图片文字太小 / 模糊？</h3>
+    <p><strong>A：</strong>在「导出文本图片…」中调大字号、行高，或选择更宽的预设（长图）并保持 2x 缩放导出；分页图按目标比例导出，单个超长楼层会独立成页。</p>
+
+    <h3>Q：分页图里楼层会被截断吗？</h3>
+    <p><strong>A：</strong>不会。分页采用智能算法：测量每个楼层块高度 → 按页面可用高度分页 → 每页独立排版，楼层不会被截断，页面精确填充到目标尺寸。</p>
+
+    <h3>Q：「清除」下拉里的几项有什么区别？</h3>
+    <p><strong>A：</strong>重置内容＝清空楼层与帖子信息；重置格式＝还原模板、导出与视觉风格；重置用户信息＝清空所有用户档案；一起重置＝以上全部还原。</p>
+
+    <hr style="margin:48px 0;border:none;border-top:1px solid var(--border);">
+    <p style="text-align:center;color:var(--text-3);font-size:13px;">论坛体生成器使用教程 —— 基于工具当前版本编写</p>
+
+  </main>
+</div>
+
+<script>
+// Sidebar active link tracking
+var sections = document.querySelectorAll('h2[id], h3[id]');
+var navLinks = document.querySelectorAll('.sidebar a');
+var scrollTimer = null;
+
+function updateActiveLink() {
+  var scrollPos = window.scrollY + 100;
+  var current = null;
+  sections.forEach(function(sec) {
+    if (sec.offsetTop <= scrollPos) {
+      current = sec.id;
+    }
+  });
+  if (current) {
+    navLinks.forEach(function(link) {
+      link.classList.remove('active');
+      if (link.getAttribute('href') === '#' + current) {
+        link.classList.add('active');
+      }
+    });
+  }
+}
+
+window.addEventListener('scroll', function() {
+  if (scrollTimer) clearTimeout(scrollTimer);
+  scrollTimer = setTimeout(updateActiveLink, 50);
+});
+
+// Smooth scroll
+navLinks.forEach(function(link) {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    var target = document.querySelector(link.getAttribute('href'));
+    if (target) {
+      window.scrollTo({ top: target.offsetTop - 20, behavior: 'smooth' });
+    }
+  });
+});
+
+updateActiveLink();
+</script>
+</body>
+</html>

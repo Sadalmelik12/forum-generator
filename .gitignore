@@ -1,0 +1,30 @@
+# OS / editor junk
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Local editor / IDE
+.vscode/
+.idea/
+*.swp
+*~
+
+# Node (not used by this static site, keep clean)
+node_modules/
+
+# WorkBuddy project data
+.workbuddy/
+
+# Build / temp output
+dist/
+build/
+*.tmp
+
+# 验证临时脚本（node --check / jsdom 测试产物）
+_*
+
+# 部署指南仅本地可见（不随公开仓库发布）
+DEPLOY.md
+
+# 提交流程指南仅本地可见（不随公开仓库发布）
+COMMIT_GUIDE.md
